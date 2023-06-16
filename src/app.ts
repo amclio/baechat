@@ -41,6 +41,15 @@ fastify.route({
   url: '/.well-known/ai-plugin.json',
 })
 
+fastify.route({
+  handler: (req, reply) => {
+    reply.send(fastify.swagger({ yaml: true }))
+  },
+  method: 'GET',
+  schema: { hide: true },
+  url: '/.well-known/openapi.yaml',
+})
+
 fastify
   .listen({ port: 3000 })
   .then((host) => console.log('Server is listening: ', host))
