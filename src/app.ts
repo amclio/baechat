@@ -8,6 +8,7 @@ import * as path from 'path'
 import { fileURLToPath } from 'url'
 
 import routes from './routes/index.js'
+import { menifest } from './utils/chat.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -22,7 +23,10 @@ await fastify.register(fastifySwagger, {
       title: 'BaeChat Plugin API',
       version: '0.0.1',
     },
-    servers: [{ url: 'http://localhost:3000' }],
+    servers: [
+      { url: 'http://localhost:3000' },
+      { url: 'https://baechat.fly.dev' },
+    ],
   },
 })
 
@@ -34,7 +38,7 @@ fastify.register(fastifyStatic, {
 
 fastify.route({
   handler: (req, reply) => {
-    reply.sendFile('ai-plugin.json')
+    reply.send(menifest)
   },
   method: 'GET',
   schema: { hide: true },
@@ -51,5 +55,5 @@ fastify.route({
 })
 
 fastify
-  .listen({ port: 3000 })
+  .listen({ port: 3000, host: '0.0.0.0' })
   .then((host) => console.log('Server is listening: ', host))
