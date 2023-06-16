@@ -9,7 +9,6 @@ import { fileURLToPath } from 'url'
 
 import routes from './routes/index.js'
 
-const isDev = process.env.NODE_ENV === 'development'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const fastify = Fastify().withTypeProvider<TypeBoxTypeProvider>()
@@ -29,23 +28,19 @@ await fastify.register(fastifySwagger, {
 
 await fastify.register(routes)
 
-if (isDev) {
-  // NOTE: For serving static files in dev
-  fastify.register(fastifyStatic, {
-    root: path.join(__dirname, './statics/.well-known'),
-    serve: isDev,
-  })
+fastify.register(fastifyStatic, {
+  root: path.join(__dirname, './statics/.well-known'),
+})
 
-  fastify.route({
-    handler: (req, reply) => {
-      reply.sendFile('ai-plugin.json')
-    },
-    method: 'GET',
-    schema: { hide: true },
-    url: '/.well-known/ai-plugin.json',
-  })
-}
+fastify.route({
+  handler: (req, reply) => {
+    reply.sendFile('ai-plugin.json')
+  },
+  method: 'GET',
+  schema: { hide: true },
+  url: '/.well-known/ai-plugin.json',
+})
 
 fastify
   .listen({ port: 3000 })
-  .then(() => console.log('Server is listening on the port 3000!'))
+  .then((host) => console.log('Server is listening: ', host))
