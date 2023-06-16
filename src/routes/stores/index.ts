@@ -1,6 +1,7 @@
 import type { FastifyInstance, RouteHandler } from 'fastify'
 
 import { Client as GoogleMapClient } from '@googlemaps/google-maps-services-js'
+import { Type } from '@sinclair/typebox'
 import got from 'got'
 
 interface LocationParam {
@@ -49,6 +50,39 @@ async function storeRoutes(fastify: FastifyInstance) {
   fastify.route({
     handler,
     method: 'GET',
+    schema: {
+      operationId: 'getStores',
+      summary: 'Get the list of restaurants',
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            shops: {
+              type: 'array',
+              items: {
+                address: {
+                  type: 'string',
+                  description: 'The address where the user is located.',
+                },
+                score: {
+                  type: 'number',
+                  description: 'The score for the restaurant.',
+                },
+                shopName: {
+                  type: 'string',
+                  description: 'The name of the restaurant.',
+                },
+                tel: {
+                  type: 'string',
+                  description: 'The TEL number of the restaurant.',
+                },
+              },
+            },
+          },
+        },
+      },
+      querystring: Type.Object({ address: Type.Required(Type.String()) }),
+    },
     url: '/',
   })
 }

@@ -1,5 +1,8 @@
+import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
+
 import cors from '@fastify/cors'
 import fastifyStatic from '@fastify/static'
+import fastifySwagger from '@fastify/swagger'
 import Fastify from 'fastify'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
@@ -9,10 +12,22 @@ import routes from './routes/index.js'
 const isDev = process.env.NODE_ENV === 'development'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const fastify = Fastify()
+const fastify = Fastify().withTypeProvider<TypeBoxTypeProvider>()
 
-fastify.register(routes)
-fastify.register(cors)
+await fastify.register(cors)
+await fastify.register(fastifySwagger, {
+  openapi: {
+    info: {
+      description:
+        'A BaeChat API for querying restaurants based on natural language queries and metadata',
+      title: 'BaeChat Plugin API',
+      version: '0.0.1',
+    },
+    servers: [{ url: 'http://localhost:3000' }],
+  },
+})
+
+await fastify.register(routes)
 
 if (isDev) {
   // NOTE: For serving static files in dev
@@ -21,12 +36,13 @@ if (isDev) {
     serve: isDev,
   })
 
-  fastify.get('/.well-known/ai-plugin.json', (req, reply) => {
-    reply.sendFile('ai-plugin.json')
-  })
-
-  fastify.get('/.well-known/openapi.yaml', (req, reply) => {
-    reply.sendFile('openapi.yaml')
+  fastify.route({
+    handler: (req, reply) => {
+      reply.sendFile('ai-plugin.json')
+    },
+    method: 'GET',
+    schema: { hide: true },
+    url: '/.well-known/ai-plugin.json',
   })
 }
 
