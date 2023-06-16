@@ -1,0 +1,50 @@
+openapi: 3.0.2
+info:
+  title: BaeChat Plugin API
+  description: A BaeChat API for querying restaurants based on natural language queries and metadata
+  version: 0.0.1
+  servers:
+    - url: http://localhost:3000
+paths:
+  /stores:
+    get:
+      operationId: getStores
+      summary: Get the list of restaurants
+      parameters:
+        - in: query
+          name: address
+          schema:
+            type: string
+          required: true
+          description: The address where the user is located.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getStoresResponse'
+
+components:
+  schemas:
+    getStoresResponse:
+      type: object
+      properties:
+        shops:
+          type: array
+          items:
+            type: object
+            properties:
+              address:
+                type: string
+                description: The address where the user is located.
+              score:
+                type: number
+                description: The score for the restaurant.
+              shopName:
+                type: string
+                description: The name of the restaurant.
+              tel:
+                type: string
+                description: The TEL number of the restaurant.
+          description: The list of restaurants near the specified address.
