@@ -32,3 +32,11 @@ pnpm build && pnpm start
 ```
 
 Once the app is running, navigate to `ChatGPT > GPT-4 > Plugin Store > Develop your own plugin`, and enter `http://localhost:3000` into the input field.
+
+## Diagram
+
+![Diagram of BaeChat](assets/diagram.png)
+
+## License
+
+MIT
