@@ -11,8 +11,7 @@ interface LocationParam {
 
 const mapClient = new GoogleMapClient({})
 
-const createBaeUrl = ({ lat, lng }: LocationParam) =>
-  `https://shopdp-api.baemin.com/v2/BAEMIN_ONE_HOME/curations?adid=00000000-0000-0000-0000-000000000000&appver=11.45.1&displayCategory=BAEMIN_ONE_HOME_ALL&latitude=${lat}&longitude=${lng}`
+const createBaeUrl = ({ lat, lng }: LocationParam) => ``
 
 async function getResponseFromBae({ lat, lng }: LocationParam) {
   const url = createBaeUrl({ lat, lng })
