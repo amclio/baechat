@@ -54,32 +54,24 @@ async function storeRoutes(fastify: FastifyInstance) {
       operationId: 'getStores',
       summary: 'Get the list of restaurants',
       response: {
-        200: {
-          type: 'object',
-          properties: {
-            shops: {
-              type: 'array',
-              items: {
-                address: {
-                  type: 'string',
-                  description: 'The address where the user is located.',
-                },
-                score: {
-                  type: 'number',
-                  description: 'The score for the restaurant.',
-                },
-                shopName: {
-                  type: 'string',
-                  description: 'The name of the restaurant.',
-                },
-                tel: {
-                  type: 'string',
-                  description: 'The TEL number of the restaurant.',
-                },
-              },
-            },
-          },
-        },
+        200: Type.Object({
+          shops: Type.Array(
+            Type.Object({
+              address: Type.String({
+                description: 'The address where the restaurant is located.',
+              }),
+              score: Type.Number({
+                description: 'The score for the restaurant.',
+              }),
+              shopName: Type.String({
+                description: 'The name of the restaurant.',
+              }),
+              tel: Type.String({
+                description: 'The TEL number of the restaurant.',
+              }),
+            })
+          ),
+        }),
       },
       querystring: Type.Object({ address: Type.Required(Type.String()) }),
     },
